@@ -1,24 +1,6 @@
 # piper CHEROKEE 180.py
 
-#imports
-import os
-import sys
-import subprocess
-
-#set path to the folder of where i have open vsp SET TO YOUR OWN PATH, this worked for me
-vsp_main = r'C:\VSP39'
-vsp_engine = r'C:\VSP39\python\openvsp\openvsp'
-if os.path.exists(vsp_main):
-    os.add_dll_directory(vsp_main)
-    if vsp_engine not in sys.path:
-        sys.path.insert(0, vsp_engine)
-try:
-    import _vsp as vsp
-    vsp.VSPRenew()
-    print("Vsp works")
-
-except Exception as e:
-    print(f"VSP Error: {e}")
+#   Imports
 
 # General Python Imports
 import numpy as np
@@ -67,6 +49,8 @@ def main():
     
     plot_mission(results)
     
+    results = mission.evaluate()
+    
     return
 
 def vehicle_setup():
@@ -89,8 +73,7 @@ def vehicle_setup():
     vehicle.reference_area                      = 160 * Units.feet**2
     vehicle.passengers                          = 4
     
-    #main wing
-    
+    # main wing 
     wing                                        = SUAVE.Components.Wings.Main_Wing() 
     wing.tag                                    = 'main_wing' 
     wing.sweeps.quarter_chord                   = 0.0 * Units.deg
@@ -120,7 +103,7 @@ def vehicle_setup():
     segment.thickness_to_chord                  = 0.15
     segment.dihedral_outboard                   = 6.08233 * Units.deg
     segment.sweeps.quarter_chord                = 26.565 * Units.deg
-    wing.append_segment(segment) #repeatable
+    wing.append_segment(segment) 
     
     #break
     segment                                     = SUAVE.Components.Wings.Segment()
@@ -131,7 +114,7 @@ def vehicle_setup():
     segment.thickness_to_chord                  = 0.15
     segment.dihedral_outboard                   = 6.08233 * Units.deg
     segment.sweeps.quarter_chord                = 0.0 * Units.deg
-    wing.append_segment(segment) #repeatable
+    wing.append_segment(segment) 
     
     #tip
     segment                                     = SUAVE.Components.Wings.Segment()
@@ -151,7 +134,7 @@ def vehicle_setup():
     
     vehicle.append_component(wing)
     
-    #vertical stabilizer
+    # vertical stabilizer 
     
     wing                                        = SUAVE.Components.Wings.Vertical_Tail() 
     wing.tag                                    = 'vertical_stabilizer' 
@@ -161,7 +144,7 @@ def vehicle_setup():
     wing.spans.projected                        = 3.8931292 * Units.feet
     wing.chords.root                            = 4.12326 * Units.feet
     wing.chords.tip                             = 1.83256 * Units.feet
-    wing.taper                                  = wing.chords.tip/wing.chords.root 
+    wing.taper                                  = wing.chords.tip/wing.chords.root
     wing.aspect_ratio                           = wing.spans.projected **2 / wing.areas.reference 
     wing.twists.root                            = 0.0 * Units.degrees
     wing.twists.tip                             = 0.0 * Units.degrees
@@ -176,7 +159,7 @@ def vehicle_setup():
     
     vehicle.append_component(wing)
     
-    #horizontal stabilizer
+    # horizontal stabilizer 
     
     wing                                        = SUAVE.Components.Wings.Horizontal_Tail()
     wing.tag                                    = 'horizontal_stabilizer' 
@@ -200,7 +183,7 @@ def vehicle_setup():
     
     vehicle.append_component(wing)
     
-    #fuselage
+    # fuselage
     
     fuselage                                    = SUAVE.Components.Fuselages.Fuselage()
     fuselage.tag                                = "fuselage"
@@ -212,7 +195,7 @@ def vehicle_setup():
     fuselage.lengths.structure                  = fuselage.lengths.total - fuselage.lengths.empennage
     fuselage.heights.maximum                    = 3.893 * Units.feet
     fuselage.mass_properties.volume             = .4 * fuselage.lengths.total * (np.pi/4) * fuselage.heights.maximum ** 2 
-    fuselage.mass_properties.intenal_volume     = .3 * fuselage.lengths.total * (np.pi/4) * fuselage.heights.maximum ** 2 
+    fuselage.mass_properties.internal_volume    = .3 * fuselage.lengths.total * (np.pi/4) * fuselage.heights.maximum ** 2 
     fuselage.areas.wetted                       = 20
     fuselage.seats_abreast                      = 2
     fuselage.seat_pitch                         = 30 * Units.inches
@@ -220,9 +203,9 @@ def vehicle_setup():
     fuselage.fineness.nose                      = 1.3125
     fuselage.lengths.nose                       = 4.809 * Units.feet
     fuselage.heights.at_quarter_length          = 3.435 * Units.feet  
-    fuselage.heights.at_three_quarter_length    = 2.29 * Units.feet
+    fuselage.heights.at_three_quarters_length   = 2.29 * Units.feet
     fuselage.heights.at_wing_root_quarter_chord = 3.664 * Units.feet
-    fuselage.areas.front_projects               = fuselage.width * fuselage.heights.maximum
+    fuselage.areas.front_projected              = fuselage.width * fuselage.heights.maximum
     fuselage.effective_diameter                 = 3.664 * Units.feet
     
     #Segment, nose
@@ -308,38 +291,39 @@ def vehicle_setup():
     
     vehicle.append_component(fuselage)
     
-    #engine network
+    # Engine network
     
     # build network
-    net                                         = SUAVE.Components.Energy.Networks.Internal_Combustion_Propeller() 
+    net                                         = SUAVE.Components.Energy.Networks.Internal_Combustion_Propeller() #name of file in openvsp
     net.tag                                     = 'internal_combustion' #name of file in openvsp
     net.number_of_engines                       = 1
     net.identical_propellers                    = True
     
     #the engine is set here
-    engine                                      = SUAVE.Components.Energy.Converters.Internal_Combustion_Engine()
+    engine                                      = SUAVE.Components.Energy.Converters.Internal_Combustion_Engine() #name of file in openvsp
     engine.sea_level_power                      = 180 * Units.horsepower
     engine.flat_rate_altitude                   = 0 * Units.feet
     engine.rated_speed                          = 2700 * Units.rpm
     engine.power_specific_fuel_consumption      = 0.5 
     net.engines.append(engine)
-    
+     
+
     #making the prop
     prop                                        = SUAVE.Components.Energy.Converters.Propeller()
     prop.number_of_blades                       = 2
     prop.origin                                 = [[5  * Units.inches, 0, 0]]
-    prop.freestream_velocity                    = 141 * Units.mph
-    prop.angular_velocity                       = 2620 * Units.rpm
+    prop.freestream_velocity                    = 116   * Units.mph
+    prop.angular_velocity                       = 2580 * Units.rpm
     prop.tip_radius                             = 38 * Units.inches
     prop.hub_radius                             = 4 * Units.inches
     prop.design_Cl                              = 0.6
-    prop.design_power                           = .75 * engine.sea_level_power
-    prop.design_altitude                        = 9300 * Units.feet
+    prop.design_power                           = 0.75 * 0.80 * engine.sea_level_power
+    prop.design_altitude                        = 8000 * Units.feet
     prop.variable_pitch                         = False
     
     prop.airfoil_geometry = ['./Airfoils/NACA_4412.txt']
     
-    # find polars to make the proper geometry
+    # 
     prop.airfoil_polars = [[
         './Airfoils/Polars/NACA_4412_polar_Re_50000.txt',
         './Airfoils/Polars/NACA_4412_polar_Re_100000.txt',
@@ -358,7 +342,7 @@ def vehicle_setup():
     
     return vehicle
 
-def configs_setup(vehicle):
+def configs_setup(vehicle): 
     #   Initialize Configurations
     configs                                                    = SUAVE.Components.Configs.Config.Container() 
     base_config                                                = SUAVE.Components.Configs.Config(vehicle)
@@ -372,40 +356,65 @@ def configs_setup(vehicle):
 
     return configs
 
+#   Define the Mission
 
-
-def mission_setup(analyses,vehicle): #repeatable
-    #   Define the Mission
-
+def mission_setup(analyses,vehicle): 
+    
     #   Initialize the Mission
-
+    
     mission = SUAVE.Analyses.Mission.Sequential_Segments()
     mission.tag = 'the_mission'
-
-
-    # unpack Segments module
+    
+    
+    # Unpack Segments module
     Segments = SUAVE.Analyses.Mission.Segments
-
-    # base segment
+    
+    # Base segment 
     base_segment = Segments.Segment()
     
+    
 
-    #   Cruise Segment
+    
+    #   Cruise Segment  
 
     segment = Segments.Cruise.Constant_Speed_Constant_Altitude(base_segment)
     segment.tag = "cruise"
 
     segment.analyses.extend( analyses )
 
-    segment.altitude  = 9000. * Units.feet
-    segment.air_speed = 116.   * Units.knots
-    segment.distance  = 100 * Units.nautical_mile
+    segment.altitude                                = 8000. * Units.feet
+    segment.air_speed                               = 116.   * Units.mph
+    segment.distance                                = 100 * Units.nautical_mile
     
-    ones_row                                        = segment.state.ones_row   
-    segment.state.numerics.number_control_points    = 16
+    ones_row                                        = segment.state.ones_row  
+    segment.state.numerics.number_control_points    = 16  
     segment.state.unknowns.throttle                 = 1.0 * ones_row(1)
-    segment = vehicle.networks.internal_combustion.add_unknowns_and_residuals_to_segment(segment,rpm=2600)
+    segment = vehicle.networks.internal_combustion.add_unknowns_and_residuals_to_segment(segment,rpm=2580) 
+    #basically ur asking, find the exact Throttle Setting and Engine Torque required 
+    #so that the thrust from the propeller perfectly matches the drag of the airplane at (speed) knots 
+    #and (altitude) feet, while the engine stays at exactly (given) RPM."
     
+    segment.process.iterate.conditions.stability    = SUAVE.Methods.skip
+    segment.process.finalize.post_process.stability = SUAVE.Methods.skip    
+
+    # add to mission
+    mission.append_segment(segment)
+     
+    #   Cruise Segment2   
+
+    segment = Segments.Descent.Constant_Speed_Constant_Rate(base_segment)
+    segment.tag = "descend"
+
+    segment.analyses.extend( analyses )
+
+    segment.altitude_end                            = 4000 * Units.feet
+    segment.air_speed                               = 116.   * Units.mph
+    segment.descent_rate                            = 5 * Units.feet
+    
+    ones_row                                        = segment.state.ones_row  
+    segment.state.numerics.number_control_points    = 16  
+    segment.state.unknowns.throttle                 = 1.0 * ones_row(1)
+    segment = vehicle.networks.internal_combustion.add_unknowns_and_residuals_to_segment(segment,rpm=2580) 
     
     segment.process.iterate.conditions.stability    = SUAVE.Methods.skip
     segment.process.finalize.post_process.stability = SUAVE.Methods.skip    
@@ -417,12 +426,11 @@ def mission_setup(analyses,vehicle): #repeatable
     return mission
 
 
-def base_analysis(vehicle):
+def base_analysis(vehicle): 
 
-    #   Initialize analying    
+    #   Initialize analying   
     analyses = SUAVE.Analyses.Vehicle()
 
-    ##  Basic Geometry Relations
     sizing = SUAVE.Analyses.Sizing.Sizing()
     sizing.features.vehicle = vehicle
     analyses.append(sizing)
@@ -434,7 +442,7 @@ def base_analysis(vehicle):
 
     #  Aerodynamics Analysis
     
-    # landing gear drag
+    # Calculate landing gear drag 
     
     main_wheel_width  = 4. * Units.inches
     main_wheel_height = 12. * Units.inches
@@ -450,7 +458,7 @@ def base_analysis(vehicle):
     
     total_strut = 2*main_gear_strut_height*main_gear_strut_length + nose_gear_strut_height*nose_gear_strut_width
     
-    # total drag from extra wheels
+    # total drag area
     drag_area = 1.4*( total_wheel + total_strut)
     
     
@@ -459,18 +467,15 @@ def base_analysis(vehicle):
     aerodynamics.settings.drag_coefficient_increment = 1.0*drag_area/vehicle.reference_area
     analyses.append(aerodynamics)
 
-    # ------------------------------------------------------------------
     #  Energy
     energy= SUAVE.Analyses.Energy.Energy()
     energy.network = vehicle.networks #what is called throughout the mission (at every time step))
     analyses.append(energy)
 
-    # ------------------------------------------------------------------
     #  Planet Analysis
     planet = SUAVE.Analyses.Planets.Planet()
     analyses.append(planet)
 
-    # ------------------------------------------------------------------
     #  Atmosphere Analysis
     atmosphere = SUAVE.Analyses.Atmospheric.US_Standard_1976()
     atmosphere.features.planet = planet.features
@@ -481,9 +486,7 @@ def base_analysis(vehicle):
 
 
 
-# ----------------------------------------------------------------------
 #   Plot Mission
-# ----------------------------------------------------------------------
 
 def plot_mission(results,line_style='bo-'):
     
@@ -520,6 +523,4 @@ def vsp_write_read(vehicle):
 # This section is needed to actually run the various functions in the file
 if __name__ == '__main__': 
     main()      
-
     plt.show()
-
