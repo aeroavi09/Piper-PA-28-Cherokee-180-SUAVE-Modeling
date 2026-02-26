@@ -1,13 +1,11 @@
 # piper CHEROKEE 180.py
 
-# ----------------------------------------------------------------------
-#   Imports
-# ----------------------------------------------------------------------
+#imports
 import os
 import sys
 import subprocess
 
-#set path to the folder of where i have open vsp SET TO YOUR OWN PATH
+#set path to the folder of where i have open vsp SET TO YOUR OWN PATH, this worked for me
 vsp_main = r'C:\VSP39'
 vsp_engine = r'C:\VSP39\python\openvsp\openvsp'
 if os.path.exists(vsp_main):
@@ -73,8 +71,8 @@ def main():
 
 def vehicle_setup():
     
-    vehicle                                     = SUAVE.Vehicle() #repeatable
-    vehicle.tag                                 = plane_name #repeatable
+    vehicle                                     = SUAVE.Vehicle() 
+    vehicle.tag                                 = plane_name 
     
     #Vehicle level properties
     
@@ -91,20 +89,18 @@ def vehicle_setup():
     vehicle.reference_area                      = 160 * Units.feet**2
     vehicle.passengers                          = 4
     
-    #------------------------
-    # main wing 
-    #------------------------
+    #main wing
     
-    wing                                        = SUAVE.Components.Wings.Main_Wing() #repeatable
-    wing.tag                                    = 'main_wing' #repeatable
+    wing                                        = SUAVE.Components.Wings.Main_Wing() 
+    wing.tag                                    = 'main_wing' 
     wing.sweeps.quarter_chord                   = 0.0 * Units.deg
     wing.thickness_to_chord                     = 0.15
     wing.areas.reference                        = 160 * Units.feet**2
     wing.spans.projected                        = 30 * Units.feet
     wing.chords.root                            = 75 * Units.inches
     wing.chords.tip                             = 63 * Units.inches
-    wing.taper                                  = wing.chords.tip/wing.chords.root #repeatable, try not to
-    wing.aspect_ratio                           = wing.spans.projected **2 / wing.areas.reference #repeatable
+    wing.taper                                  = wing.chords.tip/wing.chords.root 
+    wing.aspect_ratio                           = wing.spans.projected **2 / wing.areas.reference 
     wing.twists.root                            = 0.0 * Units.degrees
     wing.twists.tip                             = 0.0 * Units.degrees
     wing.origin                                 = [[4.809 * Units.feet, 1.832 * Units.feet, -1.145 * Units.feet]] #x,y,z
@@ -116,8 +112,8 @@ def vehicle_setup():
     # wing segments ------------
     
     #root
-    segment                                     = SUAVE.Components.Wings.Segment()#repeatable
-    segment.tag                                 = 'root' #repeatable
+    segment                                     = SUAVE.Components.Wings.Segment()
+    segment.tag                                 = 'root' 
     segment.percent_span_location               = 0.0
     segment.twist                               = 0.0 * Units.deg
     segment.root_chord_percent                  = 1.0
@@ -127,8 +123,8 @@ def vehicle_setup():
     wing.append_segment(segment) #repeatable
     
     #break
-    segment                                     = SUAVE.Components.Wings.Segment()#repeatable
-    segment.tag                                 = 'break' #repeatable
+    segment                                     = SUAVE.Components.Wings.Segment()
+    segment.tag                                 = 'break' 
     segment.percent_span_location               = 0.1
     segment.twist                               = 0.0 * Units.deg
     segment.root_chord_percent                  = 0.84
@@ -138,15 +134,15 @@ def vehicle_setup():
     wing.append_segment(segment) #repeatable
     
     #tip
-    segment                                     = SUAVE.Components.Wings.Segment()#repeatable
-    segment.tag                                 = 'tip' #repeatable
+    segment                                     = SUAVE.Components.Wings.Segment()
+    segment.tag                                 = 'tip' 
     segment.percent_span_location               = 1.0
     segment.twist                               = 0.0 * Units.deg
     segment.root_chord_percent                  = 0.84
     segment.thickness_to_chord                  = 0.15
     segment.dihedral_outboard                   = 6.08233 * Units.deg
     segment.sweeps.quarter_chord                = 26.565 * Units.deg
-    wing.append_segment(segment) #repeatable
+    wing.append_segment(segment) 
     
     #fill out more segments automatically
     wing                                        = segment_properties(wing)
@@ -155,20 +151,18 @@ def vehicle_setup():
     
     vehicle.append_component(wing)
     
-    #------------------------
-    # vertical stabilizer 
-    #------------------------
+    #vertical stabilizer
     
-    wing                                        = SUAVE.Components.Wings.Vertical_Tail() #repeatable
-    wing.tag                                    = 'vertical_stabilizer' #repeatable
+    wing                                        = SUAVE.Components.Wings.Vertical_Tail() 
+    wing.tag                                    = 'vertical_stabilizer' 
     wing.sweeps.quarter_chord                   = 30 * Units.deg
     wing.thickness_to_chord                     = 0.08
     wing.areas.reference                        = 11.57 * Units.feet**2
     wing.spans.projected                        = 3.8931292 * Units.feet
     wing.chords.root                            = 4.12326 * Units.feet
     wing.chords.tip                             = 1.83256 * Units.feet
-    wing.taper                                  = wing.chords.tip/wing.chords.root #repeatable, try not to
-    wing.aspect_ratio                           = wing.spans.projected **2 / wing.areas.reference #repeatable
+    wing.taper                                  = wing.chords.tip/wing.chords.root 
+    wing.aspect_ratio                           = wing.spans.projected **2 / wing.areas.reference 
     wing.twists.root                            = 0.0 * Units.degrees
     wing.twists.tip                             = 0.0 * Units.degrees
     wing.origin                                 = [[18.3256 * Units.feet, 0 * Units.feet, 0.45814 * Units.feet]] #x,y,z
@@ -182,20 +176,18 @@ def vehicle_setup():
     
     vehicle.append_component(wing)
     
-    #------------------------
-    # horizontal stabilizer 
-    #------------------------
+    #horizontal stabilizer
     
-    wing                                        = SUAVE.Components.Wings.Horizontal_Tail()#repeatable
-    wing.tag                                    = 'horizontal_stabilizer' #repeatable
+    wing                                        = SUAVE.Components.Wings.Horizontal_Tail()
+    wing.tag                                    = 'horizontal_stabilizer' 
     wing.sweeps.quarter_chord                   = 0 * Units.deg
     wing.thickness_to_chord                     = 0.1
     wing.areas.reference                        = 25 * Units.feet**2
     wing.spans.projected                        = 10 * Units.feet
     wing.chords.root                            = 30 * Units.inches
     wing.chords.tip                             = 30 * Units.inches
-    wing.taper                                  = wing.chords.tip/wing.chords.root #repeatable, try not to
-    wing.aspect_ratio                           = wing.spans.projected **2 / wing.areas.reference #repeatable
+    wing.taper                                  = wing.chords.tip/wing.chords.root 
+    wing.aspect_ratio                           = wing.spans.projected **2 / wing.areas.reference 
     wing.twists.root                            = 0.0 * Units.degrees
     wing.twists.tip                             = 0.0 * Units.degrees
     wing.origin                                 = [[20.83969 * Units.feet, 0 * Units.feet, 0 * Units.feet]] #x,y,z
@@ -208,18 +200,16 @@ def vehicle_setup():
     
     vehicle.append_component(wing)
     
-    #------------------------
-    # fuselage
-    #------------------------
+    #fuselage
     
-    fuselage                                    = SUAVE.Components.Fuselages.Fuselage()#repeatable
+    fuselage                                    = SUAVE.Components.Fuselages.Fuselage()
     fuselage.tag                                = "fuselage"
     fuselage.number_coach_seats                 = 4
     fuselage.width                              = 3.6641216 * Units.feet
     fuselage.lengths.total                      = 23 * Units.feet + 7.83 * Units.inches
     fuselage.lengths.empennage                  = 13.464 * Units.feet
     fuselage.lengths.cabin                      = 7 * Units.feet + 4 * Units.inches
-    fuselage.lengths.structure                  = fuselage.lengths.total - fuselage.lengths.empennage#repeatable
+    fuselage.lengths.structure                  = fuselage.lengths.total - fuselage.lengths.empennage
     fuselage.heights.maximum                    = 3.893 * Units.feet
     fuselage.mass_properties.volume             = .4 * fuselage.lengths.total * (np.pi/4) * fuselage.heights.maximum ** 2 
     fuselage.mass_properties.intenal_volume     = .3 * fuselage.lengths.total * (np.pi/4) * fuselage.heights.maximum ** 2 
@@ -232,104 +222,102 @@ def vehicle_setup():
     fuselage.heights.at_quarter_length          = 3.435 * Units.feet  
     fuselage.heights.at_three_quarter_length    = 2.29 * Units.feet
     fuselage.heights.at_wing_root_quarter_chord = 3.664 * Units.feet
-    fuselage.areas.front_projects               = fuselage.width * fuselage.heights.maximum#repeatable
+    fuselage.areas.front_projects               = fuselage.width * fuselage.heights.maximum
     fuselage.effective_diameter                 = 3.664 * Units.feet
     
     #Segment, nose
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_0"
     segment.percent_x_location                  = 0
     segment.percent_z_location                  = 0
     segment.height                              = 0 * Units.feet
     segment.width                               = 0 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment nose end
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_1"
     segment.percent_x_location                  = 0.0485
     segment.percent_z_location                  = 0
     segment.height                              = 1.145 * Units.feet
     segment.width                               = 1.145 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment fuselage start
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_2"
     segment.percent_x_location                  = 0.0525
     segment.percent_z_location                  = 0
     segment.height                              = 1.145 * Units.feet
     segment.width                               = 2.2519 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_3"
     segment.percent_x_location                  = 0.097
     segment.percent_z_location                  = -0.015
     segment.height                              = 2.061* Units.feet
     segment.width                               = 3.664 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_4"
     segment.percent_x_location                  = 0.206
     segment.percent_z_location                  = -0.0153
     segment.height                              = 2.519* Units.feet
     segment.width                               = 3.664 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_5"
     segment.percent_x_location                  = 0.2886
     segment.percent_z_location                  = 0.0103
     segment.height                              = 3.893* Units.feet
     segment.width                               = 3.664 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_6"
     segment.percent_x_location                  = 0.494
     segment.percent_z_location                  = 0.0103
     segment.height                              = 3.664* Units.feet
     segment.width                               = 3.664 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()#repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment()
     segment.tag                                 = "segment_6"
     segment.percent_x_location                  = 0.587
     segment.percent_z_location                  = 0.0103
     segment.height                              = 3.206* Units.feet
     segment.width                               = 2.977 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
     #Segment
-    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment() #repeatable
+    segment                                     = SUAVE.Components.Lofted_Body_Segment.Segment() 
     segment.tag                                 = "segment_7"
     segment.percent_x_location                  = 1
     segment.percent_z_location                  = 0
     segment.height                              = 0.916* Units.feet
     segment.width                               = 0 * Units.feet
-    fuselage.Segments.append(segment)#repeatable
+    fuselage.Segments.append(segment)
     
-    vehicle.append_component(fuselage)#repeatable
+    vehicle.append_component(fuselage)
     
-    #--------------------------
-    # Engine network, pretty short
-    #--------------------
+    #engine network
     
     # build network
-    net                                         = SUAVE.Components.Energy.Networks.Internal_Combustion_Propeller() #name of file in openvsp
+    net                                         = SUAVE.Components.Energy.Networks.Internal_Combustion_Propeller() 
     net.tag                                     = 'internal_combustion' #name of file in openvsp
     net.number_of_engines                       = 1
     net.identical_propellers                    = True
     
     #the engine is set here
-    engine                                      = SUAVE.Components.Energy.Converters.Internal_Combustion_Engine() #name of file in openvsp
+    engine                                      = SUAVE.Components.Energy.Converters.Internal_Combustion_Engine()
     engine.sea_level_power                      = 180 * Units.horsepower
     engine.flat_rate_altitude                   = 0 * Units.feet
     engine.rated_speed                          = 2700 * Units.rpm
@@ -351,7 +339,7 @@ def vehicle_setup():
     
     prop.airfoil_geometry = ['./Airfoils/NACA_4412.txt']
     
-    # 
+    # find polars to make the proper geometry
     prop.airfoil_polars = [[
         './Airfoils/Polars/NACA_4412_polar_Re_50000.txt',
         './Airfoils/Polars/NACA_4412_polar_Re_100000.txt',
@@ -359,10 +347,8 @@ def vehicle_setup():
         './Airfoils/Polars/NACA_4412_polar_Re_500000.txt',
         './Airfoils/Polars/NACA_4412_polar_Re_1000000.txt' ]]
     
-    # 3. Ensure the station indices are a standard list of 20 zeros
     prop.airfoil_polar_stations = [0] * 20 
     
-    # 4. Now run the design
     prop = propeller_design(prop)
     
     
@@ -372,33 +358,26 @@ def vehicle_setup():
     
     return vehicle
 
-def configs_setup(vehicle): #repeatable
-     # ------------------------------------------------------------------
+def configs_setup(vehicle):
     #   Initialize Configurations
-    # ------------------------------------------------------------------ 
     configs                                                    = SUAVE.Components.Configs.Config.Container() 
     base_config                                                = SUAVE.Components.Configs.Config(vehicle)
     base_config.tag                                            = 'base'
     configs.append(base_config)
     
-    # ------------------------------------------------------------------
     #   Cruise Configuration
-    # ------------------------------------------------------------------ 
     config                                                     = SUAVE.Components.Configs.Config(base_config)
     config.tag                                                 = 'cruise' 
     configs.append(config)
 
     return configs
 
-# ----------------------------------------------------------------------
-#   Define the Mission
-# ----------------------------------------------------------------------
+
 
 def mission_setup(analyses,vehicle): #repeatable
+    #   Define the Mission
 
-    # ------------------------------------------------------------------
     #   Initialize the Mission
-    # ------------------------------------------------------------------
 
     mission = SUAVE.Analyses.Mission.Sequential_Segments()
     mission.tag = 'the_mission'
@@ -411,10 +390,7 @@ def mission_setup(analyses,vehicle): #repeatable
     base_segment = Segments.Segment()
     
 
-
-    # ------------------------------------------------------------------    
     #   Cruise Segment
-    # ------------------------------------------------------------------    
 
     segment = Segments.Cruise.Constant_Speed_Constant_Altitude(base_segment)
     segment.tag = "cruise"
@@ -441,29 +417,24 @@ def mission_setup(analyses,vehicle): #repeatable
     return mission
 
 
-def base_analysis(vehicle): #repeatable
+def base_analysis(vehicle):
 
-    # ------------------------------------------------------------------
-    #   Initialize analying
-    # ------------------------------------------------------------------     
+    #   Initialize analying    
     analyses = SUAVE.Analyses.Vehicle()
 
-    ## ------------------------------------------------------------------
     ##  Basic Geometry Relations
     sizing = SUAVE.Analyses.Sizing.Sizing()
     sizing.features.vehicle = vehicle
     analyses.append(sizing)
 
-    # ------------------------------------------------------------------
     #  Weights
     weights = SUAVE.Analyses.Weights.Weights_Transport()
     weights.vehicle = vehicle
     analyses.append(weights)
 
-    # ------------------------------------------------------------------
     #  Aerodynamics Analysis
     
-    # Calculate extra drag from landing gear:
+    # landing gear drag
     
     main_wheel_width  = 4. * Units.inches
     main_wheel_height = 12. * Units.inches
@@ -479,7 +450,7 @@ def base_analysis(vehicle): #repeatable
     
     total_strut = 2*main_gear_strut_height*main_gear_strut_length + nose_gear_strut_height*nose_gear_strut_width
     
-    # total drag increment area
+    # total drag from extra wheels
     drag_area = 1.4*( total_wheel + total_strut)
     
     
@@ -551,3 +522,4 @@ if __name__ == '__main__':
     main()      
 
     plt.show()
+
